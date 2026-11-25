@@ -1,17 +1,27 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-
+from pydantic import BaseModel,Field
+from enum import Enum
 app = FastAPI(
     title="Return & Exchange Management API",
     version="1.0.0"
 )
+class RequestType(Enum):
+    RETURN = "return"
+    EXCHANGE = "exchange"
+
+
+class ReturnReason(Enum):
+    DEFECTIVE = "defective"
+    WRONG_PRODUCT = "wrong_product"
+    CHANGED_MIND = "changed_mind"
 
 
 class ReturnRequest(BaseModel):
-    order_id: str
-    product_code: str
-    request_type: str
-    reason: str
+    order_id: str = Field(min_length=1)
+    product_code: str = Field(min_length=1)
+    request_type: RequestType
+    reason: ReturnReason
+    
 
 
 @app.get("/")
